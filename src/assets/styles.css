@@ -1,0 +1,197 @@
+ /* Importing an external font from Google Fonts */
+ @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+ /* Basic resets and font setup */
+ body,
+ html {
+   font-family: 'Roboto', sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   background-color: #fff8fb;
+   background-image: url('@/assets/background.jpg');
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center center;
+   color: #333;
+ }
+
+ /* Header and footer styling */
+ header,
+ footer {
+   background-color: #ffb3c6;
+   padding: 20px;
+   text-align: center;
+ }
+
+ header nav a,
+ footer a {
+   margin: 0 10px;
+   text-decoration: none;
+   color: #ff4382;
+   font-size: 17px;
+   font-weight: 500;
+   transition: color 0.3s ease;
+ }
+
+ header nav a:hover,
+ footer a:hover {
+   color: #ff006e;
+   text-decoration: underline;
+ }
+
+ /* Main title and subtitles styling */
+ h1,
+ h2,
+ h3 {
+   color: #ff4382;
+ }
+
+ h1 {
+   font-size: 36px;
+   margin-bottom: 10px;
+ }
+
+ h2 {
+   text-align: center;
+   font-size: 28px;
+   margin-bottom: 10px;
+ }
+
+ h3 {
+   font-size: 22px;
+   margin-bottom: 10px;
+ }
+
+ /* Enhanced Welcome message styling */
+ header p {
+   font-family: 'Cursive', sans-serif;
+   color: #ff4382;
+   font-size: 14px;
+   font-weight: 500;
+   margin-top: 10px;
+   line-height: 1.5;
+   background-color: #ffe1eb;
+   padding: 10px;
+   border-radius: 10px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   transition: transform 0.3s ease;
+ }
+
+ /* Button Styling */
+ button {
+   background-color: #ffd6e0;
+   color: #ff4382;
+   border: 2px solid #ffb3c6;
+   padding: 8px 16px;
+   font-size: 16px;
+   font-weight: 500;
+   border-radius: 20px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   margin-right: 10px;
+   margin-bottom: 10px;
+   box-shadow: inset 0 0 4px rgba(255, 67, 130, 0.2),
+     0 3px 6px rgba(255, 67, 130, 0.2);
+ }
+
+ button:hover {
+   background-color: #ffb3c6;
+   color: #fff;
+   box-shadow: inset 0 0 6px rgba(255, 67, 130, 0.3),
+     0 4px 8px rgba(255, 67, 130, 0.3);
+   transform: scale(1.05);
+ }
+
+ button:active {
+   background-color: #ff90ab;
+   box-shadow: inset 0 0 4px rgba(255, 67, 130, 0.4),
+     0 2px 4px rgba(255, 67, 130, 0.2);
+   transform: scale(0.95);
+ }
+
+ /* Navigation styling */
+ nav {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin-top: 20px;
+ }
+
+ /* Section Styling */
+ section {
+   background-color: #ffebee;
+   padding: 20px;
+   border-radius: 10px;
+   max-width: 600px;
+   margin: auto;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+ }
+
+ /* Form Styling */
+ form {
+   display: flex;
+   flex-direction: column;
+ }
+
+ /* Input and Textarea Styling */
+ input,
+ textarea {
+   padding: 10px;
+   margin-top: 5px;
+   margin-bottom: 15px;
+   border: 2px solid #d81b60;
+   border-radius: 5px;
+   transition: border-color 0.3s, box-shadow 0.3s;
+ }
+
+ input:focus,
+ textarea:focus {
+   outline: none;
+   border-color: #f50057;
+   box-shadow: 0 0 5px rgba(245, 0, 87, 0.5);
+ }
+
+ /* Image Styling */
+ img {
+   display: block;
+   margin: 0 auto 20px;
+   max-width: 100%;
+   max-height: 400px;
+   height: auto;
+   border-radius: 10px;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+   transition: transform 0.3s, box-shadow 0.3s;
+ }
+
+ img:hover {
+   transform: scale(1.05);
+   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+ }
+
+ /* Dropdown menu Styling */
+ select {
+   width: 600px;
+   padding: 0.75rem;
+   font-size: 1rem;
+   color: #333;
+   border: 2px solid #d81b60;
+   box-shadow: 0 0 6px rgba(216, 27, 96, 0.4);
+   border-radius: 6px;
+   transition: all 0.3s ease;
+   cursor: pointer;
+   margin-bottom: 15px;
+   margin-top: 5px;
+ }
+
+ select:focus {
+   outline: none;
+   border-color: #f50057;
+   box-shadow: 0 0 8px rgba(245, 0, 87, 0.6);
+ }
+
+ select option:disabled {
+   color: #888;
+   opacity: 0.6;
+   font-style: italic;
+ }

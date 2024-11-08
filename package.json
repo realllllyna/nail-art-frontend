@@ -1,0 +1,20 @@
+{
+  "name": "nail-art-website",
+  "version": "1.0.0",
+  "description": "A frontend project for a nail art website",
+  "main": "index.js",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "vue": "^3.5.12",
+    "vue-router": "^4.0.13"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^5.0.8"
+  },
+  "author": "An Phan",
+  "license": "ISC"
+}
