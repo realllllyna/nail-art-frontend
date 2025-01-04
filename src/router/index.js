@@ -8,13 +8,13 @@ import AddNail from '../components/AddNail.vue';
 import ShowCategory from '../components/ShowCategory.vue';
 
 const routes = [
-  { path: '/', component: Gallery },
-  { path: '/nail-art/:id', component: NailArtDetail },
-  { path: '/contact', component: ContactForm },
-  { path: '/impressum', component: Impressum },
+  { path: '/', name: 'Gallery', component: Gallery },
+  { path: '/nail-art/:id', name: 'NailArtDetail', component: NailArtDetail },
+  { path: '/contact', name: 'ContactForm', component: ContactForm },
+  { path: '/impressum', name: 'Impressum', component: Impressum },
   { path: '/book-appointment/:nailArtName', name: 'BookAppointment', component: BookAppointment },
-  { path: '/add-nail', component: AddNail },
-  { path: '/show-category', component: ShowCategory },
+  { path: '/add-nail', name: 'AddNail', component: AddNail },
+  { path: '/show-category', name: 'ShowCategory', component: ShowCategory },
 ];
 
 const router = createRouter({

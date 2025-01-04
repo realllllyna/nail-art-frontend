@@ -3,12 +3,14 @@
     <h2>Gallery</h2>
     <div class="gallery">
       <div v-for="nailArt in nailArtList" :key="nailArt.id" class="nail-art-item">
-        <img :src="nailArt.image" :alt="nailArt.name" />
+        <img :src="nailArt.imageUrl" :alt="nailArt.name" />
+        
         <h3>{{ nailArt.name }}</h3>
         <p>
-          Price: <strong>{{ nailArt.price }}</strong>
+          Price: <strong>{{ nailArt.price }}€</strong>
         </p>
-        <p class="description"> {{ nailArt.description }}</p>
+        <p class="description">{{ nailArt.description }}</p>
+
         <router-link class="view-details" :to="'/nail-art/' + nailArt.id">View Details</router-link>
       </div>
     </div>
@@ -16,24 +18,30 @@
 </template>
 
 <script>
+import api from "../services/api"; // API service for backend requests
+
 export default {
   data() {
     return {
-      nailArtList: [
-        { id: 1, name: 'Mystic Aurora', price: '30€', image: require('@/assets/image1.jpg'), description: 'A beautiful pinky design perfect for spring.' },
-        { id: 2, name: 'Velvet Petals', price: '25€', image: require('@/assets/image2.jpg'), description: 'A soft, luxurious finish with a petal-like smoothness.' },
-        { id: 3, name: 'Moonlit Gloss', price: '22€', image: require('@/assets/image3.jpg'), description: 'A subtle sparkle that adds elegance to any style.' },
-        { id: 4, name: 'Iridescent Allure', price: '30€', image: require('@/assets/image4.jpg'), description: 'Captivating colors that shift with every angle.' },
-        { id: 5, name: 'Celestial Spark', price: '35€', image: require('@/assets/image5.jpg'), description: 'Cosmic glitter that lights up your nails like stars.' },
-        { id: 6, name: 'Opal Dream', price: '22€', image: require('@/assets/image6.jpg'), description: 'Soft, pearlescent hues with a dreamy, opalescent glow.' },
-        { id: 7, name: 'Lush Lacquer', price: '28€', image: require('@/assets/image7.jpg'), description: 'Rich, deep colors with a flawless, glossy shine.' },
-        { id: 8, name: 'Ethereal Polish', price: '25€', image: require('@/assets/image8.jpg'), description: 'Delicate, airy shades that feel almost otherworldly.' },
-        { id: 9, name: 'Serenity Tips', price: '32€', image: require('@/assets/image9.jpg'), description: 'Calm, soothing tones for an effortlessly chic look.' },
-        { id: 10, name: 'Blissful Hues', price: '30€', image: require('@/assets/image10.jpg'), description: 'Luxurious and opulent, adorned with crystals.' }
-      ]
+      nailArtList: [],
     };
-  }
-}
+  },
+  async created() {
+    try {
+      const response = await api.get("/entries"); // Fetch all entries from the backend
+      this.nailArtList = response.data.map(entry => ({
+        id: entry.id,
+        name: entry.title, 
+        price: entry.price,
+        imageUrl: entry.imageUrl,
+        description: entry.description,
+        category: entry.category, 
+      }));
+    } catch (error) {
+      console.error("Error fetching entries:", error);
+    }
+  },
+};
 </script>
 
 <style scoped>
@@ -83,6 +91,13 @@ export default {
 .nail-art-item .description::before {
   content: '🌸';
   margin-right: 5px;
+}
+
+/* New Category Style */
+.nail-art-item .category {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
 }
 
 .view-details {

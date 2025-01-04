@@ -3,7 +3,6 @@
     <h2>Add New Nail Art</h2>
     <section>
       <form @submit.prevent="submitForm">
-
         <label for="name">Name:</label>
         <input type="text" id="name" v-model="nailArt.name" required />
 
@@ -35,21 +34,35 @@ export default {
         name: '',
         category: '',
         description: '',
-        image: null,
+        image: null, // Hier wird das Bild gespeichert
       },
     };
   },
   methods: {
     handleFileUpload(event) {
-      this.nailArt.image = event.target.files[0];
+      const file = event.target.files[0];  // Datei auswählen
+      const filePath = `/uploads/${file.name}`;  // Pfad im Uploads-Verzeichnis
+      this.nailArt.image = filePath;  // Nur den Pfad im Backend speichern
     },
-    handleSubmit() {
-      alert("A new nail art has been successfully added!");
-    },
-    submitForm() {
-      console.log('Nail art added:', this.nailArt);
-      this.resetForm();
-      this.handleSubmit();
+    async submitForm() {
+      const formData = new FormData();
+      formData.append('name', this.nailArt.name);
+      formData.append('category', this.nailArt.category);
+      formData.append('description', this.nailArt.description);
+      formData.append('imageUrl', this.nailArt.image);  // Nur den Pfad übergeben
+
+      try {
+        const response = await api.post('/entries/add', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('New nail art added:', response.data);
+        this.resetForm();
+        alert('New nail art has been added successfully!');
+      } catch (error) {
+        console.error('Error adding new nail art:', error);
+      }
     },
     resetForm() {
       this.nailArt.name = '';
