@@ -112,18 +112,20 @@ export default {
       this.editedNailArt = { ...this.nailArt }; // Reset to the original nail art data
     },
     async updateNailArt() {
+      console.log("Save button clicked", this.editedNailArt);
       try {
         const response = await api.put(`/entries/${this.nailArt.id}`, this.editedNailArt);
+        console.log("Update response:", response);
 
-        // Fetch the updated nail art entry from the backend to ensure the category is updated
+        // Fetch the updated data
         const updatedNailArtResponse = await api.get(`/entries/${this.nailArt.id}`);
-        this.nailArt = updatedNailArtResponse.data; // Update with fresh data
+        this.nailArt = updatedNailArtResponse.data;
 
         this.isEditing = false;
         alert("Nail art updated successfully!");
       } catch (error) {
         console.error("Error updating nail art:", error);
-        alert("Error updating nail art");
+        alert("Failed to update nail art. Please try again.");
       }
     },
     async deleteNailArt() {
@@ -171,4 +173,5 @@ select {
   width: calc(100% - 16px);
   border: 1px solid #ccc;
   border-radius: 4px;
-}</style>
+}
+</style>
