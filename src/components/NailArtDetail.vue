@@ -3,9 +3,9 @@
     <section v-if="nailArt">
       <h2 class="nail-art-title">{{ nailArt.title }}</h2>
       <img :src="nailArt.imageUrl" :alt="nailArt.title" class="nail-art-image" />
-      
+
       <div class="nail-art-info">
-        <p><strong>Category:</strong> {{ nailArt.category.name || 'No category' }}</p> <!-- Display the category directly -->
+        <p><strong>Category:</strong> {{ nailArt.category ? nailArt.category.name : 'No category' }}</p>
         <p><strong>Price:</strong> {{ nailArt.price }}€</p>
         <p><strong>Description:</strong> {{ nailArt.description }}</p>
         <p><strong>Artist:</strong> {{ nailArt.artist }}</p>
@@ -63,7 +63,6 @@
       <label for="availability">Availability:</label>
       <input v-model="editedNailArt.availability" id="availability" placeholder="Enter availability info" />
 
-      <!-- Category Dropdown -->
       <label for="category">Category:</label>
       <select v-model="editedNailArt.categoryId" id="category">
         <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
@@ -112,11 +111,16 @@ export default {
     async updateNailArt() {
       try {
         const response = await api.put(`/entries/${this.nailArt.id}`, this.editedNailArt);
-        this.nailArt = response.data;
+
+        // Fetch the updated nail art entry from the backend to ensure the category is updated
+        const updatedNailArtResponse = await api.get(`/entries/${this.nailArt.id}`);
+        this.nailArt = updatedNailArtResponse.data; // Update with fresh data
+
         this.isEditing = false;
         alert("Nail art updated successfully!");
       } catch (error) {
         console.error("Error updating nail art:", error);
+        alert("Error updating nail art");
       }
     },
     async deleteNailArt() {
@@ -138,6 +142,7 @@ export default {
 .nail-art-detail {
   padding: 20px;
 }
+
 .edit-nail-art-form {
   margin-top: 20px;
   padding: 16px;
@@ -148,17 +153,19 @@ export default {
 
 .edit-nail-art-form label {
   font-weight: bold;
-  font-size: 0.85rem;  /* Smaller font size for labels */
+  font-size: 0.85rem;
+  /* Smaller font size for labels */
   margin-bottom: 5px;
   display: block;
 }
 
-.edit-nail-art-form input, textarea, select {
+.edit-nail-art-form input,
+textarea,
+select {
   display: block;
   margin: 10px 0;
   padding: 8px;
   width: calc(100% - 16px);
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-</style>
+}</style>
