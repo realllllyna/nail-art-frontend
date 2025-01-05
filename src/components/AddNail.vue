@@ -51,87 +51,56 @@
 </template>
 
 <script>
-import api from "../services/api"; // API service for backend requests
+import api from "../services/api";
 
 export default {
   data() {
     return {
       nailArt: {
         title: '',
-        categoryId: null,  // Store category as categoryId
+        categoryId: null,
         price: null,
         artist: '',
         duration: null,
         description: '',
-        image: null,
+        image: '',
         colorOptions: '',
         materials: '',
         aftercare: '',
         allergyWarnings: '',
-        availability: ''
+        availability: '',
       },
-      categories: [], // This will hold the categories fetched from the backend
+      categories: [],
     };
   },
   mounted() {
-    // Fetch categories from the backend when the component is mounted
     this.fetchCategories();
   },
   methods: {
-    handleFileUpload(event) {
-      const file = event.target.files[0]; // Get the file
-      if (file) {
-        this.nailArt.image = file; // Store the file object
-      }
-    },
+    // Fetch categories from the backend
     async fetchCategories() {
       try {
-        const response = await api.get('/categories'); // Make a GET request to fetch categories
-        this.categories = response.data; // Store the categories in the local state
+        const response = await api.get('/categories');
+        this.categories = response.data;
       } catch (error) {
         console.error('Error fetching categories:', error);
+        alert('Failed to load categories. Please refresh the page.');
       }
     },
-    async submitForm() {
-      if (!this.isFormValid()) {
-        alert('Please fill out all required fields.');
-        return;
-      }
 
-      const formData = new FormData();
-      formData.append('title', this.nailArt.title);
-      formData.append('categoryId', this.nailArt.categoryId); // Use categoryId, not name
-      formData.append('price', this.nailArt.price);
-      formData.append('artist', this.nailArt.artist);
-      formData.append('duration', this.nailArt.duration);
-      formData.append('description', this.nailArt.description);
-      formData.append('colorOptions', this.nailArt.colorOptions);
-      formData.append('materials', this.nailArt.materials);
-      formData.append('aftercare', this.nailArt.aftercare);
-      formData.append('allergyWarnings', this.nailArt.allergyWarnings);
-      formData.append('availability', this.nailArt.availability);
-
-      if (this.nailArt.image) {
-        formData.append('image', this.nailArt.image); // Append the actual file
-      }
-
-      try {
-        const response = await api.post('/entries/add', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        console.log('New nail art added:', response.data);
-        this.resetForm();
-        alert('New nail art has been added successfully!');
-      } catch (error) {
-        console.error('Error adding new nail art:', error);
-      }
-    },
+    // Validate form before submission
     isFormValid() {
-      // Check if required fields are filled out
-      return this.nailArt.title && this.nailArt.categoryId && this.nailArt.price && this.nailArt.artist && this.nailArt.duration && this.nailArt.description;
+      return (
+        this.nailArt.title &&
+        this.nailArt.categoryId &&
+        this.nailArt.price &&
+        this.nailArt.artist &&
+        this.nailArt.duration &&
+        this.nailArt.description
+      );
     },
+
+    // Reset form fields after successful submission
     resetForm() {
       this.nailArt = {
         title: '',
@@ -140,13 +109,42 @@ export default {
         artist: '',
         duration: null,
         description: '',
-        image: null,
+        image: '',
         colorOptions: '',
         materials: '',
         aftercare: '',
         allergyWarnings: '',
-        availability: ''
+        availability: '',
       };
+    },
+
+    // Submit form data to the backend
+    async submitForm() {
+      if (!this.isFormValid()) {
+        alert('Please fill out all required fields.');
+        return;
+      }
+
+      // Ensure proper data types before sending
+      const payload = {
+        ...this.nailArt,
+        categoryId: parseInt(this.nailArt.categoryId, 10), // Ensure categoryId is an integer
+        price: parseFloat(this.nailArt.price), // Ensure price is a float
+        duration: parseInt(this.nailArt.duration, 10), // Ensure duration is an integer
+      };
+
+      try {
+        console.log('Submitting data:', payload);
+        const response = await api.post('/entries/add', payload, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        console.log('New nail art added:', response.data);
+        this.resetForm();
+        alert('New nail art has been added successfully!');
+      } catch (error) {
+        console.error('Error adding new nail art:', error.response?.data || error.message);
+        alert(`Error adding new nail art: ${error.response?.data?.error || 'Please try again.'}`);
+      }
     },
   },
 };
