@@ -26,8 +26,8 @@
         <label for="description">Description:</label>
         <textarea id="description" v-model="nailArt.description" required></textarea>
 
-        <label for="image">Upload Image:</label>
-        <input type="file" id="image" @change="handleFileUpload" required />
+        <label for="image">Image (URL):</label>
+        <input type="text" id="image" v-model="nailArt.image" required />
 
         <label for="colorOptions">Color Options:</label>
         <textarea id="colorOptions" v-model="nailArt.colorOptions"></textarea>
@@ -110,7 +110,7 @@ export default {
       formData.append('aftercare', this.nailArt.aftercare);
       formData.append('allergyWarnings', this.nailArt.allergyWarnings);
       formData.append('availability', this.nailArt.availability);
-      
+
       if (this.nailArt.image) {
         formData.append('image', this.nailArt.image); // Append the actual file
       }

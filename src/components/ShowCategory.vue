@@ -1,7 +1,7 @@
 <template>
   <div class="show-category">
     <h2>Categories</h2>
-    <button @click="showAddCategoryForm" class="add-category-button">Add Category</button>
+    <button @click="showAddCategoryForm" class="add-category-button">+ Add Category</button>
     <div class="category-grid">
       <div class="category-card" v-for="category in categories" :key="category.name">
         <img :src="category.image" alt="Category Image" class="category-image" />
