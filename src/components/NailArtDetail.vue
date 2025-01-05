@@ -5,7 +5,7 @@
       <img :src="nailArt.imageUrl" :alt="nailArt.title" class="nail-art-image" />
       
       <div class="nail-art-info">
-        <p><strong>Category:</strong> {{ nailArt.category || 'No category' }}</p> <!-- Display the category directly -->
+        <p><strong>Category:</strong> {{ nailArt.category.name || 'No category' }}</p> <!-- Display the category directly -->
         <p><strong>Price:</strong> {{ nailArt.price }}€</p>
         <p><strong>Description:</strong> {{ nailArt.description }}</p>
         <p><strong>Artist:</strong> {{ nailArt.artist }}</p>
@@ -65,10 +65,8 @@
 
       <!-- Category Dropdown -->
       <label for="category">Category:</label>
-      <select v-model="editedNailArt.category" id="category">
-        <option value="Gel">Gel</option>
-        <option value="Acrylic">Acrylic</option>
-        <option value="Natural">Natural</option>
+      <select v-model="editedNailArt.categoryId" id="category">
+        <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
       </select>
 
       <button @click="updateNailArt">Save</button>
@@ -86,6 +84,7 @@ export default {
       nailArt: null, // Holds the nail art details
       isEditing: false, // Toggles edit mode
       editedNailArt: {}, // Stores the edited data
+      categories: [], // List of categories for the dropdown
     };
   },
   async created() {
@@ -94,6 +93,10 @@ export default {
       const response = await api.get(`/entries/${nailArtId}`); // Fetch nail art details from the backend
       this.nailArt = response.data; // Populate nailArt
       this.editedNailArt = { ...this.nailArt }; // Prepare data for editing
+
+      // Fetch categories to populate the dropdown
+      const categoryResponse = await api.get("/categories");
+      this.categories = categoryResponse.data;
     } catch (error) {
       console.error("Error fetching nail art details:", error);
     }
@@ -104,7 +107,7 @@ export default {
     },
     cancelEdit() {
       this.isEditing = false;
-      this.editedNailArt = { ...this.nailArt };
+      this.editedNailArt = { ...this.nailArt }; // Reset to the original nail art data
     },
     async updateNailArt() {
       try {
