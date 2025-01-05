@@ -5,10 +5,11 @@
     <div class="category-grid">
       <div class="category-card" v-for="category in categories" :key="category.id">
         <h3>{{ category.name }}</h3>
-        <p>Number of Entries: <strong>{{ category.entries?.length || 0 }}</strong></p>
+        <p class="description">{{ category.description }}</p>
+        <p>Number of Nails: <strong>{{ category.entries?.length || 0 }}</strong></p>
         <div class="button-group">
           <button @click="editCategory(category)" class="action-button">Edit</button>
-          <button @click="deleteCategory(category.id)" class="action-button">Delete</button>
+          <button @click="deleteCategory(category.id, category.name)" class="action-button">Delete</button>
         </div>
       </div>
     </div>
@@ -16,7 +17,7 @@
     <div v-if="isAdding" class="add-category-form">
       <h3>Add New Category</h3>
       <input v-model="newCategoryName" placeholder="Category Name" />
-      <input v-model="newCategoryDescription" placeholder="Category Description"/>
+      <textarea v-model="newCategoryDescription" placeholder="Category Description"></textarea>
       <button @click="addCategory">Save</button>
       <button @click="cancelAddCategory">Cancel</button>
     </div>
@@ -24,7 +25,7 @@
     <div v-if="isEditing" class="edit-category-form">
       <h3>Edit Category</h3>
       <input v-model="editCategoryName" placeholder="Category Name" />
-      <textarea v-model="editCategoryDescription" placeholder="Category Description"></textarea>
+      <input v-model="editCategoryDescription" placeholder="Category Description" />
       <button @click="updateCategory">Save</button>
       <button @click="cancelEditCategory">Cancel</button>
     </div>
@@ -119,13 +120,17 @@ export default {
       this.editCategoryDescription = '';
       this.currentEditingCategoryId = null;
     },
-    async deleteCategory(categoryId) {
-      try {
-        await axios.delete(`http://localhost:3000/categories/${categoryId}`);
-        this.categories = this.categories.filter(c => c.id !== categoryId);
-      } catch (error) {
-        console.error('Error deleting category:', error);
-        alert('Failed to delete category. Please try again.');
+    async deleteCategory(categoryId, categoryName) {
+      if (confirm(`Are you sure you want to delete "${categoryName}"?`)) {
+        try {
+          console.log(`Sending DELETE request for category ID: ${categoryId}`);
+          await axios.delete(`http://localhost:3000/categories/${categoryId}`);
+          this.categories = this.categories.filter(c => c.id !== categoryId);
+          alert(`Nail art category "${categoryName}" deleted successfully!`);
+        } catch (error) {
+          console.error('Error deleting category:', error.response?.data || error.message);
+          alert(`Failed to delete category "${categoryName}". Please try again.`);
+        }
       }
     },
   },
@@ -164,10 +169,17 @@ export default {
   background-color: #ffedf3;
 }
 
-.category-image {
-  max-width: 100%;
-  border-radius: 20px;
-  transition: transform 0.3s ease;
+.description {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #777;
+  line-height: 1.5;
+  font-weight: normal;
+}
+
+.description::before {
+  content: '🌸';
+  margin-right: 5px;
 }
 
 .add-category-form,
@@ -180,7 +192,9 @@ export default {
 }
 
 .add-category-form input,
-.edit-category-form input {
+.edit-category-form input,
+.add-category-form textarea,
+.edit-category-form textarea {
   display: block;
   margin: 10px 0;
   padding: 8px;
