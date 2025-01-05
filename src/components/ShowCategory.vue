@@ -16,6 +16,7 @@
     <div v-if="isAdding" class="add-category-form">
       <h3>Add New Category</h3>
       <input v-model="newCategoryName" placeholder="Category Name" />
+      <input v-model="newCategoryDescription" placeholder="Category Description"/>
       <button @click="addCategory">Save</button>
       <button @click="cancelAddCategory">Cancel</button>
     </div>
@@ -23,6 +24,7 @@
     <div v-if="isEditing" class="edit-category-form">
       <h3>Edit Category</h3>
       <input v-model="editCategoryName" placeholder="Category Name" />
+      <textarea v-model="editCategoryDescription" placeholder="Category Description"></textarea>
       <button @click="updateCategory">Save</button>
       <button @click="cancelEditCategory">Cancel</button>
     </div>
@@ -39,7 +41,9 @@ export default {
       isAdding: false,
       isEditing: false,
       newCategoryName: '',
+      newCategoryDescription: '',
       editCategoryName: '',
+      editCategoryDescription: '',
       currentEditingCategoryId: null,
     };
   },
@@ -53,17 +57,24 @@ export default {
         alert('Failed to fetch categories. Please try again later.');
       }
     },
+    showAddCategoryForm() {
+      this.isAdding = true;
+      this.newCategoryName = '';
+      this.newCategoryDescription = '';
+    },
     async addCategory() {
-      if (!this.newCategoryName.trim()) {
-        alert('Category name is required.');
+      if (!this.newCategoryName.trim() || !this.newCategoryDescription.trim()) {
+        alert('Both name and description are required.');
         return;
       }
       try {
         const response = await axios.post('http://localhost:3000/categories', {
           name: this.newCategoryName,
+          description: this.newCategoryDescription,
         });
         this.categories.push(response.data);
         this.newCategoryName = '';
+        this.newCategoryDescription = '';
         this.isAdding = false;
       } catch (error) {
         console.error('Error adding category:', error);
@@ -72,26 +83,30 @@ export default {
     },
     cancelAddCategory() {
       this.newCategoryName = '';
+      this.newCategoryDescription = '';
       this.isAdding = false;
     },
     editCategory(category) {
       this.isEditing = true;
       this.currentEditingCategoryId = category.id;
       this.editCategoryName = category.name;
+      this.editCategoryDescription = category.description;
     },
     async updateCategory() {
-      if (!this.editCategoryName.trim()) {
-        alert('Category name is required.');
+      if (!this.editCategoryName.trim() || !this.editCategoryDescription.trim()) {
+        alert('Both name and description are required.');
         return;
       }
       try {
         const response = await axios.put(`http://localhost:3000/categories/${this.currentEditingCategoryId}`, {
           name: this.editCategoryName,
+          description: this.editCategoryDescription,
         });
         const index = this.categories.findIndex(c => c.id === this.currentEditingCategoryId);
         this.categories[index] = response.data;
         this.isEditing = false;
         this.editCategoryName = '';
+        this.editCategoryDescription = '';
         this.currentEditingCategoryId = null;
       } catch (error) {
         console.error('Error updating category:', error);
@@ -101,6 +116,7 @@ export default {
     cancelEditCategory() {
       this.isEditing = false;
       this.editCategoryName = '';
+      this.editCategoryDescription = '';
       this.currentEditingCategoryId = null;
     },
     async deleteCategory(categoryId) {
