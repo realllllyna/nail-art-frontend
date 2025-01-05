@@ -98,17 +98,31 @@ export default {
         alert('Both name and description are required.');
         return;
       }
+
       try {
+        // Update category on the backend
         const response = await axios.put(`http://localhost:3000/categories/${this.currentEditingCategoryId}`, {
           name: this.editCategoryName,
           description: this.editCategoryDescription,
         });
+
+        // Find and update the category in the local state
         const index = this.categories.findIndex(c => c.id === this.currentEditingCategoryId);
-        this.categories[index] = response.data;
+        if (index !== -1) {
+          this.categories[index] = response.data;
+        }
+
+        // Fetch updated category data to reflect nail art count changes
+        const categoryData = await axios.get('http://localhost:3000/categories');
+        this.categories = categoryData.data; // Refresh the full categories list with updated counts
+
+        // Reset form fields and state
         this.isEditing = false;
         this.editCategoryName = '';
         this.editCategoryDescription = '';
         this.currentEditingCategoryId = null;
+
+        alert('Category updated successfully!');
       } catch (error) {
         console.error('Error updating category:', error);
         alert('Failed to update category. Please try again.');
