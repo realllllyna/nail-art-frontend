@@ -19,6 +19,9 @@
 
       <nav>
         <div class="action-buttons">
+          <router-link :to="{ name: 'BookAppointment', params: { nailArtName: nailArt.title } }" class="btn">
+            <button>Book Appointment</button>
+          </router-link>
           <button @click="editNailArt">Edit</button>
           <button @click="deleteNailArt">Delete</button>
         </div>
