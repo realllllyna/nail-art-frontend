@@ -3,13 +3,12 @@
     <h2>Categories</h2>
     <button @click="showAddCategoryForm" class="add-category-button">+ Add Category</button>
     <div class="category-grid">
-      <div class="category-card" v-for="category in categories" :key="category.name">
-        <img :src="category.image" alt="Category Image" class="category-image" />
+      <div class="category-card" v-for="category in categories" :key="category.id">
         <h3>{{ category.name }}</h3>
-        <p>Total Amount: <strong>{{ category.total }}</strong></p>
+        <p>Number of Entries: <strong>{{ category.entries?.length || 0 }}</strong></p>
         <div class="button-group">
-          <button @click="editCategory(category.name)" class="action-button">Edit</button>
-          <button @click="deleteCategory(category.name)" class="action-button">Delete</button>
+          <button @click="editCategory(category)" class="action-button">Edit</button>
+          <button @click="deleteCategory(category.id)" class="action-button">Delete</button>
         </div>
       </div>
     </div>
@@ -17,17 +16,13 @@
     <div v-if="isAdding" class="add-category-form">
       <h3>Add New Category</h3>
       <input v-model="newCategoryName" placeholder="Category Name" />
-      <input v-model="newCategoryTotal" type="number" placeholder="Total Number" />
-      <input v-model="newCategoryImage" placeholder="Image URL" />
       <button @click="addCategory">Save</button>
       <button @click="cancelAddCategory">Cancel</button>
     </div>
 
     <div v-if="isEditing" class="edit-category-form">
-      <h3>Edit Category: {{ editCategoryName }}</h3>
+      <h3>Edit Category</h3>
       <input v-model="editCategoryName" placeholder="Category Name" />
-      <input v-model="editCategoryTotal" type="number" placeholder="Total Number" />
-      <input v-model="editCategoryImage" placeholder="Image URL" />
       <button @click="updateCategory">Save</button>
       <button @click="cancelEditCategory">Cancel</button>
     </div>
@@ -35,87 +30,91 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      categories: [
-        { name: 'Natural', total: 3, image: require('@/assets/natural.jpg') },
-        { name: 'Acrylic', total: 2, image: require('@/assets/acrylic.jpg') },
-        { name: 'Gel', total: 4, image: require('@/assets/gel.jpg') },
-      ],
+      categories: [],
       isAdding: false,
       isEditing: false,
       newCategoryName: '',
-      newCategoryTotal: 0,
-      newCategoryImage: '',
       editCategoryName: '',
-      editCategoryTotal: 0,
-      editCategoryImage: '',
-      currentEditingCategoryIndex: null,
+      currentEditingCategoryId: null,
     };
   },
   methods: {
-    showAddCategoryForm() {
-      this.isAdding = true;
-      this.resetAddForm();
+    async fetchCategories() {
+      try {
+        const response = await axios.get('http://localhost:3000/categories');
+        this.categories = response.data;
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        alert('Failed to fetch categories. Please try again later.');
+      }
     },
-    addCategory() {
-      if (this.newCategoryName && this.newCategoryImage) {
-        this.categories.push({
+    async addCategory() {
+      if (!this.newCategoryName.trim()) {
+        alert('Category name is required.');
+        return;
+      }
+      try {
+        const response = await axios.post('http://localhost:3000/categories', {
           name: this.newCategoryName,
-          total: this.newCategoryTotal,
-          image: this.newCategoryImage,
         });
-        this.resetAddForm();
+        this.categories.push(response.data);
+        this.newCategoryName = '';
         this.isAdding = false;
-      } else {
-        alert('Please fill in all fields.');
+      } catch (error) {
+        console.error('Error adding category:', error);
+        alert('Failed to add category. Please try again.');
       }
     },
     cancelAddCategory() {
-      this.resetAddForm();
+      this.newCategoryName = '';
       this.isAdding = false;
     },
     editCategory(category) {
       this.isEditing = true;
-      this.currentEditingCategoryIndex = this.categories.findIndex(c => c.name === category.name);
+      this.currentEditingCategoryId = category.id;
       this.editCategoryName = category.name;
-      this.editCategoryTotal = category.total;
-      this.editCategoryImage = category.image;
     },
-    updateCategory() {
-      if (this.editCategoryName && this.editCategoryImage) {
-        if (this.currentEditingCategoryIndex !== null) {
-          this.categories[this.currentEditingCategoryIndex] = {
-            name: this.editCategoryName,
-            total: this.editCategoryTotal,
-            image: this.editCategoryImage,
-          };
-        }
-        this.resetEditForm();
+    async updateCategory() {
+      if (!this.editCategoryName.trim()) {
+        alert('Category name is required.');
+        return;
+      }
+      try {
+        const response = await axios.put(`http://localhost:3000/categories/${this.currentEditingCategoryId}`, {
+          name: this.editCategoryName,
+        });
+        const index = this.categories.findIndex(c => c.id === this.currentEditingCategoryId);
+        this.categories[index] = response.data;
         this.isEditing = false;
-      } else {
-        alert('Please fill in all fields.');
+        this.editCategoryName = '';
+        this.currentEditingCategoryId = null;
+      } catch (error) {
+        console.error('Error updating category:', error);
+        alert('Failed to update category. Please try again.');
       }
     },
     cancelEditCategory() {
-      this.resetEditForm();
       this.isEditing = false;
-    },
-    deleteCategory(name) {
-      this.categories = this.categories.filter(category => category.name !== name);
-    },
-    resetAddForm() {
-      this.newCategoryName = '';
-      this.newCategoryTotal = 0;
-      this.newCategoryImage = '';
-    },
-    resetEditForm() {
       this.editCategoryName = '';
-      this.editCategoryTotal = 0;
-      this.editCategoryImage = '';
-      this.currentEditingCategoryIndex = null;
+      this.currentEditingCategoryId = null;
     },
+    async deleteCategory(categoryId) {
+      try {
+        await axios.delete(`http://localhost:3000/categories/${categoryId}`);
+        this.categories = this.categories.filter(c => c.id !== categoryId);
+      } catch (error) {
+        console.error('Error deleting category:', error);
+        alert('Failed to delete category. Please try again.');
+      }
+    },
+  },
+  mounted() {
+    this.fetchCategories();
   },
 };
 </script>
