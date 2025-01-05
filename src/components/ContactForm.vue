@@ -4,13 +4,13 @@
     <section>
       <form @submit.prevent="handleSubmit" role="form" aria-label="Contact form">
         <label for="name">Name:</label>
-        <input type="text" id="name" required aria-label="Your name" />
+        <input type="text" id="name" v-model="formData.name" required aria-label="Your name" />
 
         <label for="email">Email:</label>
-        <input type="email" id="email" required aria-label="Your email address" />
+        <input type="email" id="email" v-model="formData.email" required aria-label="Your email address" />
 
         <label for="message">Message:</label>
-        <textarea id="message" required aria-label="Your message"></textarea>
+        <textarea id="message" v-model="formData.message" required aria-label="Your message"></textarea>
 
         <button type="submit">Submit</button>
       </form>
@@ -27,10 +27,26 @@
 
 <script>
 export default {
+  data() {
+    return {
+      formData: {
+        name: '',
+        email: '',
+        message: ''
+      }
+    };
+  },
   methods: {
     handleSubmit() {
       alert("Thank you for your message! We'll get back to you soon.");
+
+      // Reset formData
+      this.formData = {
+        name: '',
+        email: '',
+        message: ''
+      };
     }
   }
-}
+};
 </script>
