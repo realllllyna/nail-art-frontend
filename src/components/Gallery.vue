@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import api from "../services/api"; // API service for backend requests
+import api from "../services/api";
 
 export default {
   data() {
@@ -91,13 +91,6 @@ export default {
 .nail-art-item .description::before {
   content: '🌸';
   margin-right: 5px;
-}
-
-/* New Category Style */
-.nail-art-item .category {
-  font-size: 14px;
-  color: #333;
-  margin-top: 10px;
 }
 
 .view-details {

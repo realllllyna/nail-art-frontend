@@ -28,11 +28,9 @@
       </nav>
     </section>
 
-    <!-- Edit form to modify nail art details -->
     <div v-if="isEditing" class="edit-nail-art-form">
       <h3>Edit Nail Art: {{ nailArt.title }}</h3>
 
-      <!-- Form fields with labels -->
       <label for="title">Nail Art Title:</label>
       <input v-model="editedNailArt.title" id="title" placeholder="Enter the title of the nail art" />
 
@@ -78,15 +76,15 @@
 </template>
 
 <script>
-import api from "../services/api"; // API service for backend requests
+import api from "../services/api";
 
 export default {
   data() {
     return {
-      nailArt: null, // Holds the nail art details
-      isEditing: false, // Toggles edit mode
-      editedNailArt: {}, // Stores the edited data
-      categories: [], // List of categories for the dropdown
+      nailArt: null,
+      isEditing: false,
+      editedNailArt: {},
+      categories: [],
     };
   },
   async created() {
@@ -159,7 +157,6 @@ export default {
 .edit-nail-art-form label {
   font-weight: bold;
   font-size: 0.85rem;
-  /* Smaller font size for labels */
   margin-bottom: 5px;
   display: block;
 }
