@@ -3,8 +3,9 @@
     <section v-if="nailArt">
       <h2 class="nail-art-title">{{ nailArt.title }}</h2>
       <img :src="nailArt.imageUrl" :alt="nailArt.title" class="nail-art-image" />
+
       <div class="nail-art-info">
-        <p><strong>Category:</strong> {{ nailArt.category ? nailArt.category.name : "No category" }}</p>
+        <p><strong>Category:</strong> {{ nailArt.category ? nailArt.category.name : 'No category' }}</p>
         <p><strong>Price:</strong> {{ nailArt.price }}€</p>
         <p><strong>Description:</strong> {{ nailArt.description }}</p>
         <p><strong>Artist:</strong> {{ nailArt.artist }}</p>
@@ -29,47 +30,47 @@
 
     <div v-if="isEditing" class="edit-nail-art-form">
       <h3>Edit Nail Art: {{ nailArt.title }}</h3>
-      
-        <label for="title">Nail Art Title:</label>
-        <input v-model="editedNailArt.title" id="title" placeholder="Enter the title of the nail art" />
 
-        <label for="price">Price (€):</label>
-        <input v-model="editedNailArt.price" id="price" type="number" placeholder="Enter price" />
+      <label for="title">Nail Art Title:</label>
+      <input v-model="editedNailArt.title" id="title" placeholder="Enter the title of the nail art" />
 
-        <label for="imageUrl">Image URL:</label>
-        <input v-model="editedNailArt.imageUrl" id="imageUrl" placeholder="Enter image URL" />
+      <label for="price">Price (€):</label>
+      <input v-model="editedNailArt.price" id="price" type="number" placeholder="Enter price" />
 
-        <label for="description">Description:</label>
-        <textarea v-model="editedNailArt.description" id="description" placeholder="Describe the nail art"></textarea>
+      <label for="imageUrl">Image URL:</label>
+      <input v-model="editedNailArt.imageUrl" id="imageUrl" placeholder="Enter image URL" />
 
-        <label for="artist">Artist:</label>
-        <input v-model="editedNailArt.artist" id="artist" placeholder="Enter the artist's name" />
+      <label for="description">Description:</label>
+      <textarea v-model="editedNailArt.description" id="description" placeholder="Describe the nail art"></textarea>
 
-        <label for="duration">Duration:</label>
-        <input v-model="editedNailArt.duration" id="duration" placeholder="Enter duration in minutes" />
+      <label for="artist">Artist:</label>
+      <input v-model="editedNailArt.artist" id="artist" placeholder="Enter the artist's name" />
 
-        <label for="colorOptions">Color Options:</label>
-        <input v-model="editedNailArt.colorOptions" id="colorOptions" placeholder="Enter color options" />
+      <label for="duration">Duration:</label>
+      <input v-model="editedNailArt.duration" id="duration" placeholder="Enter duration in minutes" />
 
-        <label for="materials">Materials Used:</label>
-        <input v-model="editedNailArt.materials" id="materials" placeholder="Enter materials used" />
+      <label for="colorOptions">Color Options:</label>
+      <input v-model="editedNailArt.colorOptions" id="colorOptions" placeholder="Enter color options" />
 
-        <label for="aftercare">Aftercare Tips:</label>
-        <input v-model="editedNailArt.aftercare" id="aftercare" placeholder="Enter aftercare tips" />
+      <label for="materials">Materials Used:</label>
+      <input v-model="editedNailArt.materials" id="materials" placeholder="Enter materials used" />
 
-        <label for="allergyWarnings">Allergy Warnings:</label>
-        <input v-model="editedNailArt.allergyWarnings" id="allergyWarnings" placeholder="Enter allergy warnings" />
+      <label for="aftercare">Aftercare Tips:</label>
+      <input v-model="editedNailArt.aftercare" id="aftercare" placeholder="Enter aftercare tips" />
 
-        <label for="availability">Availability:</label>
-        <input v-model="editedNailArt.availability" id="availability" placeholder="Enter availability info" />
+      <label for="allergyWarnings">Allergy Warnings:</label>
+      <input v-model="editedNailArt.allergyWarnings" id="allergyWarnings" placeholder="Enter allergy warnings" />
 
-        <label for="category">Category:</label>
-        <select v-model="editedNailArt.categoryId" id="category">
-          <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
-        </select>
+      <label for="availability">Availability:</label>
+      <input v-model="editedNailArt.availability" id="availability" placeholder="Enter availability info" />
 
-        <button type="submit">Save</button>
-        <button @click="cancelEdit">Cancel</button>
+      <label for="category">Category:</label>
+      <select v-model="editedNailArt.categoryId" id="category">
+        <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+      </select>
+
+      <button @click="updateNailArt">Save</button>
+      <button @click="cancelEdit">Cancel</button>
     </div>
   </div>
 </template>
@@ -88,8 +89,9 @@ export default {
   },
   async created() {
     try {
-      const nailArtId = this.$route.params.id;
+      const nailArtId = this.$route.params.id; // Get ID from route params
       const response = await api.get(`/entries/${nailArtId}`);
+
       this.nailArt = {
         ...response.data,
         imageUrl: response.data.imageUrl.startsWith("http")
@@ -97,6 +99,9 @@ export default {
           : ApiUrl + response.data.imageUrl,
       };
       this.editedNailArt = { ...this.nailArt };
+
+      const categoryResponse = await api.get("/categories");
+      this.categories = categoryResponse.data;
     } catch (error) {
       console.error("Error fetching nail art details:", error);
       alert("Failed to load details.");
@@ -125,7 +130,7 @@ export default {
       if (confirm(`Are you sure you want to delete "${this.nailArt.title}"?`)) {
         try {
           await api.delete(`/entries/${this.nailArt.id}`);
-          alert("Deleted successfully!");
+          alert(`Nail art "${this.nailArt.title}" deleted successfully!`);
           this.$router.push({ name: "Gallery" });
         } catch (error) {
           console.error("Error deleting nail art:", error);
