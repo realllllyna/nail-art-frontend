@@ -94,6 +94,7 @@ export default {
         this.nailArt.title &&
         this.nailArt.categoryId &&
         this.nailArt.price &&
+        this.nailArt.imageUrl &&
         this.nailArt.artist &&
         this.nailArt.duration &&
         this.nailArt.description
