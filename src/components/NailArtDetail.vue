@@ -93,11 +93,13 @@ export default {
       const response = await api.get(`/entries/${nailArtId}`);
 
       this.nailArt = {
-        ...response.data,
-        imageUrl: response.data.imageUrl.startsWith("http")
-          ? response.data.imageUrl
-          : ApiUrl + response.data.imageUrl,
-      };
+      ...response.data,
+      imageUrl: response.data.imageUrl
+        ? (response.data.imageUrl.startsWith("http")
+            ? response.data.imageUrl
+            : ApiUrl + response.data.imageUrl)
+        : "/default-image.jpg",
+    };
       this.editedNailArt = { ...this.nailArt };
 
       const categoryResponse = await api.get("/categories");
