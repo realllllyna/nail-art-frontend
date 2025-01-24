@@ -90,17 +90,16 @@ export default {
   async created() {
     try {
       const nailArtId = this.$route.params.id; // Get ID from route params
-      const response = await api.get(`/entries/${nailArtId}`); // Fetch nail art details from the backend
+      const response = await api.get(`/entries/${nailArtId}`);
 
-      // Update nailArt and include the full image URL using ApiUrl
-      this.nailArt = {
-        ...response.data,
-        imageUrl: ApiUrl + response.data.imageUrl,
-      };
+      // Append ApiUrl only if not already included
+      const imageUrl = response.data.imageUrl.startsWith(ApiUrl)
+        ? response.data.imageUrl
+        : ApiUrl + response.data.imageUrl;
 
-      this.editedNailArt = { ...this.nailArt }; // Prepare data for editing
+      this.nailArt = { ...response.data, imageUrl };
+      this.editedNailArt = { ...this.nailArt };
 
-      // Fetch categories to populate the dropdown
       const categoryResponse = await api.get("/categories");
       this.categories = categoryResponse.data;
     } catch (error) {
@@ -113,26 +112,25 @@ export default {
     },
     cancelEdit() {
       this.isEditing = false;
-      this.editedNailArt = { ...this.nailArt }; // Reset to the original nail art data
+      this.editedNailArt = { ...this.nailArt };
     },
     async updateNailArt() {
       try {
-        // Check if imageUrl already contains ApiUrl and add it only if missing
-        const updatedNailArtData = {
-          ...this.editedNailArt,
-          imageUrl: this.editedNailArt.imageUrl.startsWith(ApiUrl)
-            ? this.editedNailArt.imageUrl
-            : ApiUrl + this.editedNailArt.imageUrl,
-        };
+        // Ensure ApiUrl is added only once
+        const updatedImageUrl = this.editedNailArt.imageUrl.startsWith(ApiUrl)
+          ? this.editedNailArt.imageUrl
+          : ApiUrl + this.editedNailArt.imageUrl;
 
-        // Send the updated data to the API
-        const response = await api.put(`/entries/${this.nailArt.id}`, updatedNailArtData);
+        const updatedNailArtData = { ...this.editedNailArt, imageUrl: updatedImageUrl };
 
-        // Fetch the updated data to reflect changes
-        const updatedNailArtResponse = await api.get(`/entries/${this.nailArt.id}`);
+        await api.put(`/entries/${this.nailArt.id}`, updatedNailArtData);
+
+        const updatedResponse = await api.get(`/entries/${this.nailArt.id}`);
         this.nailArt = {
-          ...updatedNailArtResponse.data,
-          imageUrl: ApiUrl + updatedNailArtResponse.data.imageUrl,
+          ...updatedResponse.data,
+          imageUrl: updatedResponse.data.imageUrl.startsWith(ApiUrl)
+            ? updatedResponse.data.imageUrl
+            : ApiUrl + updatedResponse.data.imageUrl,
         };
 
         this.isEditing = false;
@@ -147,7 +145,7 @@ export default {
         try {
           await api.delete(`/entries/${this.nailArt.id}`);
           alert(`Nail art "${this.nailArt.title}" deleted successfully!`);
-          this.$router.push({ name: "Gallery" }); // Redirect after deletion
+          this.$router.push({ name: "Gallery" });
         } catch (error) {
           console.error("Error deleting nail art:", error);
         }
