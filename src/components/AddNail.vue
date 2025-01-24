@@ -26,8 +26,8 @@
         <label for="description">Description:</label>
         <textarea id="description" v-model="nailArt.description" required></textarea>
 
-        <label for="imageUrl">Image (URL):</label>
-        <textarea id="imageUrl" v-model="nailArt.image" required></textarea>
+        <label for="imageUrl">Image Path:</label>
+        <input type="text" id="imageUrl" v-model="nailArt.imageUrl" required placeholder="/uploads/image3.jpg" />
 
         <label for="colorOptions">Color Options:</label>
         <textarea id="colorOptions" v-model="nailArt.colorOptions"></textarea>
@@ -51,24 +51,24 @@
 </template>
 
 <script>
-import api, { ApiUrl } from "../services/api";
+import api from "../services/api";
 
 export default {
   data() {
     return {
       nailArt: {
-        title: '',
+        title: "",
         categoryId: null,
         price: null,
-        artist: '',
+        artist: "",
         duration: null,
-        description: '',
-        imageUrl: '',
-        colorOptions: '',
-        materials: '',
-        aftercare: '',
-        allergyWarnings: '',
-        availability: '',
+        description: "",
+        imageUrl: "", // Ensure this matches the template
+        colorOptions: "",
+        materials: "",
+        aftercare: "",
+        allergyWarnings: "",
+        availability: "",
       },
       categories: [],
     };
@@ -77,18 +77,15 @@ export default {
     await this.fetchCategories();
   },
   methods: {
-    // Fetch categories from the backend
     async fetchCategories() {
       try {
-        const response = await api.get('/categories');
+        const response = await api.get("/categories");
         this.categories = response.data;
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        alert('Failed to load categories. Please refresh the page.');
+        console.error("Error fetching categories:", error);
+        alert("Failed to load categories. Please refresh the page.");
       }
     },
-
-    // Validate form before submission
     isFormValid() {
       return (
         this.nailArt.title &&
@@ -100,53 +97,55 @@ export default {
         this.nailArt.description
       );
     },
-
-    // Reset form fields after successful submission
     resetForm() {
       this.nailArt = {
-        title: '',
+        title: "",
         categoryId: null,
         price: null,
-        artist: '',
+        artist: "",
         duration: null,
-        description: '',
-        imageUrl: '',
-        colorOptions: '',
-        materials: '',
-        aftercare: '',
-        allergyWarnings: '',
-        availability: '',
+        description: "",
+        imageUrl: "",
+        colorOptions: "",
+        materials: "",
+        aftercare: "",
+        allergyWarnings: "",
+        availability: "",
       };
     },
-
-    // Submit form data to the backend
     async submitForm() {
       if (!this.isFormValid()) {
-        alert('Please fill out all required fields.');
+        alert("Please fill out all required fields.");
         return;
       }
 
-      // Ensure proper data types before sending
       const payload = {
         ...this.nailArt,
-        categoryId: parseInt(this.nailArt.categoryId, 10), // Ensure categoryId is an integer
-        price: parseFloat(this.nailArt.price), // Ensure price is a float
+        categoryId: parseInt(this.nailArt.categoryId, 10),
+        price: parseFloat(this.nailArt.price),
+        duration: parseInt(this.nailArt.duration, 10),
         imageUrl: this.nailArt.imageUrl,
-        duration: parseInt(this.nailArt.duration, 10), // Ensure duration is an integer
       };
 
       try {
-        console.log('Submitting data:', payload);
-        const response = await api.post('/entries/add', payload, {
-          headers: { 'Content-Type': 'application/json' },
+        console.log("Submitting data:", payload);
+        const response = await api.post("/entries/add", payload, {
+          headers: { "Content-Type": "application/json" },
         });
-        console.log('New nail art added:', response.data);
-        this.$emit('nailArtAdded'); // Emit event for parent
+        console.log("New nail art added:", response.data);
+        this.$emit("nailArtAdded");
         this.resetForm();
-        alert('New nail art has been added successfully!');
+        alert("New nail art has been added successfully!");
       } catch (error) {
-        console.error('Error adding new nail art:', error.response?.data || error.message);
-        alert(`Error adding new nail art: ${error.response?.data?.error || 'Please try again.'}`);
+        console.error(
+          "Error adding new nail art:",
+          error.response?.data || error.message
+        );
+        alert(
+          `Error adding new nail art: ${
+            error.response?.data?.error || "Please try again."
+          }`
+        );
       }
     },
   },
