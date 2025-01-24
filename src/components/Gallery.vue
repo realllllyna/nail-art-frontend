@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import api from "../services/api";
+import api, { ApiUrl } from "../services/api";
 
 export default {
   data() {
@@ -33,7 +33,7 @@ export default {
         id: entry.id,
         name: entry.title, 
         price: entry.price,
-        imageUrl: entry.imageUrl,
+        imageUrl: ApiUrl + entry.imageUrl,
         description: entry.description,
         category: entry.category, 
       }));
