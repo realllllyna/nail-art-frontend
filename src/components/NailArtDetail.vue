@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import api from "../services/api";
+import api, { ApiUrl } from "../services/api";
 
 export default {
   data() {
@@ -91,7 +91,13 @@ export default {
     try {
       const nailArtId = this.$route.params.id; // Get ID from route params
       const response = await api.get(`/entries/${nailArtId}`); // Fetch nail art details from the backend
-      this.nailArt = response.data; // Populate nailArt
+
+      // Update nailArt and include the full image URL using ApiUrl
+      this.nailArt = {
+        ...response.data,
+        imageUrl: ApiUrl + response.data.imageUrl,
+      };
+
       this.editedNailArt = { ...this.nailArt }; // Prepare data for editing
 
       // Fetch categories to populate the dropdown
@@ -110,14 +116,15 @@ export default {
       this.editedNailArt = { ...this.nailArt }; // Reset to the original nail art data
     },
     async updateNailArt() {
-      console.log("Save button clicked", this.editedNailArt);
       try {
         const response = await api.put(`/entries/${this.nailArt.id}`, this.editedNailArt);
-        console.log("Update response:", response);
 
-        // Fetch the updated data
+        // Fetch the updated data and ensure the full image URL is maintained
         const updatedNailArtResponse = await api.get(`/entries/${this.nailArt.id}`);
-        this.nailArt = updatedNailArtResponse.data;
+        this.nailArt = {
+          ...updatedNailArtResponse.data,
+          imageUrl: ApiUrl + updatedNailArtResponse.data.imageUrl,
+        };
 
         this.isEditing = false;
         alert("Nail art updated successfully!");
