@@ -63,7 +63,7 @@ export default {
         artist: '',
         duration: null,
         description: '',
-        image: ApiUrl + '',
+        image: '',
         colorOptions: '',
         materials: '',
         aftercare: '',

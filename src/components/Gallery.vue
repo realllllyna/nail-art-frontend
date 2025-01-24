@@ -28,25 +28,30 @@ export default {
   },
   watch: {
     nailArtAdded() {
-      this.fetchNailArt(); // Fetch data when updated
+      console.log('Gallery is fetching new entries...'); // Debug log
+      this.fetchNailArt();
     },
   },
   methods: {
     async fetchNailArt() {
       try {
+        console.log('Fetching updated nail art list...'); // Debug log
         const response = await api.get("/entries");
+        console.log('Updated entries:', response.data); // Debug response
         this.nailArtList = response.data.map((entry) => ({
           id: entry.id,
-          name: entry.title,
-          price: entry.price,
-          imageUrl: entry.imageUrl.startsWith("http")
-            ? entry.imageUrl
-            : ApiUrl + entry.imageUrl,
-          description: entry.description,
+          name: entry.title || "Untitled",
+          price: entry.price || 0,
+          imageUrl:
+            entry.imageUrl && entry.imageUrl.startsWith("http")
+              ? entry.imageUrl
+              : ApiUrl + (entry.imageUrl || "/default-image.jpg"),
+          description: entry.description || "No description available",
+          category: entry.category || "Uncategorized",
         }));
       } catch (error) {
         console.error("Error fetching entries:", error);
-        alert("Failed to load gallery.");
+        alert("Failed to load gallery. Please try again later.");
       }
     },
   },
