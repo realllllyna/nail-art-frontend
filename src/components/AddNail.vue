@@ -26,8 +26,8 @@
         <label for="description">Description:</label>
         <textarea id="description" v-model="nailArt.description" required></textarea>
 
-        <label for="image">Image (URL):</label>
-        <input type="text" id="image" v-model="nailArt.image" required />
+        <label for="imageUrl">Image (URL):</label>
+        <input type="text" id="imageUrl" v-model="nailArt.image" required />
 
         <label for="colorOptions">Color Options:</label>
         <textarea id="colorOptions" v-model="nailArt.colorOptions"></textarea>
@@ -63,7 +63,7 @@ export default {
         artist: '',
         duration: null,
         description: '',
-        image: '',
+        imageUrl: '',
         colorOptions: '',
         materials: '',
         aftercare: '',
@@ -109,7 +109,7 @@ export default {
         artist: '',
         duration: null,
         description: '',
-        image: '',
+        imageUrl: '',
         colorOptions: '',
         materials: '',
         aftercare: '',
