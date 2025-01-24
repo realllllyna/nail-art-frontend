@@ -1,101 +1,81 @@
 <template>
-  <div>
-    <h2>Gallery</h2>
-    <div class="gallery">
-      <div v-for="nailArt in nailArtList" :key="nailArt.id" class="nail-art-item">
-        <img :src="nailArt.imageUrl" :alt="nailArt.name" />
-        
-        <h3>{{ nailArt.name }}</h3>
-        <p>
-          Price: <strong>{{ nailArt.price }}€</strong>
-        </p>
-        <p class="description">{{ nailArt.description }}</p>
-
-        <router-link class="view-details" :to="'/nail-art/' + nailArt.id">View Details</router-link>
+  <div class="gallery">
+    <h1>Nail Art Gallery</h1>
+    <div class="nail-art-list">
+      <div
+        v-for="nail in nailArtList"
+        :key="nail.id"
+        class="nail-art-card"
+      >
+        <img :src="nail.imageUrl" :alt="nail.name" />
+        <h2>{{ nail.name }}</h2>
+        <p>{{ nail.description }}</p>
+        <p><strong>Price:</strong> {{ nail.price }} €</p>
+        <button @click="viewDetails(nail.id)">View Details</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import api, { ApiUrl } from "../services/api";
+import axios from 'axios';
 
 export default {
   data() {
     return {
       nailArtList: [],
+      ApiUrl: 'https://nail-art-backend.onrender.com',
     };
   },
-  async created() {
-    try {
-      const response = await api.get("/entries"); // Fetch all entries from the backend
-      this.nailArtList = response.data.map(entry => ({
-        id: entry.id,
-        name: entry.title, 
-        price: entry.price,
-        imageUrl: ApiUrl + entry.imageUrl,
-        description: entry.description,
-        category: entry.category, 
-      }));
-    } catch (error) {
-      console.error("Error fetching entries:", error);
-    }
+  methods: {
+    fetchNailArtList() {
+      axios
+        .get(`${this.ApiUrl}/api/nailart`)
+        .then((response) => {
+          this.nailArtList = response.data.map((entry) => ({
+            id: entry.id,
+            name: entry.title,
+            price: entry.price,
+            imageUrl: entry.imageUrl.startsWith('http')
+              ? entry.imageUrl
+              : this.ApiUrl + entry.imageUrl,
+            description: entry.description,
+          }));
+        })
+        .catch((error) => {
+          console.error('Error fetching nail art list:', error);
+        });
+    },
+    viewDetails(id) {
+      this.$router.push({ name: 'NailArtDetail', params: { id } });
+    },
+  },
+  mounted() {
+    this.fetchNailArtList();
   },
 };
 </script>
 
 <style scoped>
+/* Basic styles for the gallery */
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  padding: 20px;
+}
+.nail-art-list {
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  padding: 20px;
 }
-
-.nail-art-item {
-  border: 2px solid #ffb3c6;
-  padding: 20px;
+.nail-art-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  background-color: #fff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  width: 200px;
 }
-
-.nail-art-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-  background-color: #ffedf3;
-}
-
-.nail-art-item img {
+.nail-art-card img {
   max-width: 100%;
-  border-radius: 20px;
-  transition: transform 0.3s ease;
-}
-
-.nail-art-item img:hover {
-  transform: scale(1.1);
-}
-
-.nail-art-item .description {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #777;
-  line-height: 1.5;
-  font-weight: normal;
-}
-
-.nail-art-item .description::before {
-  content: '🌸';
-  margin-right: 5px;
-}
-
-.view-details {
-  text-decoration: underline;
-  color: #ff4382;
-  cursor: pointer;
+  height: auto;
+  border-radius: 8px;
 }
 </style>
