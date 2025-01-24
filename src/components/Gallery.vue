@@ -33,6 +33,7 @@ export default {
           ? entry.imageUrl
           : ApiUrl + entry.imageUrl,
         description: entry.description,
+        category: entry.category, 
       }));
     } catch (error) {
       console.error("Error fetching entries:", error);
