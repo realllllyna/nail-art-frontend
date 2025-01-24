@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import api from "../services/api";
+import api, { ApiUrl } from "../services/api";
 
 export default {
   data() {
@@ -63,7 +63,7 @@ export default {
         artist: '',
         duration: null,
         description: '',
-        image: '',
+        image: ApiUrl + '',
         colorOptions: '',
         materials: '',
         aftercare: '',
