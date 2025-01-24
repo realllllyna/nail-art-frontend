@@ -27,7 +27,7 @@
         <textarea id="description" v-model="nailArt.description" required></textarea>
 
         <label for="imageUrl">Image (URL):</label>
-        <input type="text" id="imageUrl" v-model="nailArt.image" required />
+        <textarea id="imageUrl" v-model="nailArt.image" required></textarea>
 
         <label for="colorOptions">Color Options:</label>
         <textarea id="colorOptions" v-model="nailArt.colorOptions"></textarea>
