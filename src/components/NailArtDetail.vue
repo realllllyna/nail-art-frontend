@@ -7,6 +7,13 @@
         <p><strong>Category:</strong> {{ nailArt.category ? nailArt.category.name : "No category" }}</p>
         <p><strong>Price:</strong> {{ nailArt.price }}€</p>
         <p><strong>Description:</strong> {{ nailArt.description }}</p>
+        <p><strong>Artist:</strong> {{ nailArt.artist }}</p>
+        <p><strong>Duration:</strong> {{ nailArt.duration }}</p>
+        <p><strong>Color Options:</strong> {{ nailArt.colorOptions }}</p>
+        <p><strong>Materials Used:</strong> {{ nailArt.materials }}</p>
+        <p><strong>Aftercare Tips:</strong> {{ nailArt.aftercare }}</p>
+        <p><strong>Allergy Warnings:</strong> {{ nailArt.allergyWarnings }}</p>
+        <p><strong>Availability:</strong> {{ nailArt.availability }}</p>
       </div>
       <nav>
         <div class="action-buttons">
@@ -22,11 +29,42 @@
       <h3>Edit Nail Art: {{ nailArt.title }}</h3>
       <form @submit.prevent="updateNailArt">
         <label for="title">Nail Art Title:</label>
-        <input v-model="editedNailArt.title" id="title" placeholder="Enter title" />
+        <input v-model="editedNailArt.title" id="title" placeholder="Enter the title of the nail art" />
+
         <label for="price">Price (€):</label>
         <input v-model="editedNailArt.price" id="price" type="number" placeholder="Enter price" />
+
+        <label for="imageUrl">Image URL:</label>
+        <input v-model="editedNailArt.imageUrl" id="imageUrl" placeholder="Enter image URL" />
+
         <label for="description">Description:</label>
-        <textarea v-model="editedNailArt.description" id="description"></textarea>
+        <textarea v-model="editedNailArt.description" id="description" placeholder="Describe the nail art"></textarea>
+
+        <label for="artist">Artist:</label>
+        <input v-model="editedNailArt.artist" id="artist" placeholder="Enter the artist's name" />
+
+        <label for="duration">Duration:</label>
+        <input v-model="editedNailArt.duration" id="duration" placeholder="Enter duration in minutes" />
+
+        <label for="colorOptions">Color Options:</label>
+        <input v-model="editedNailArt.colorOptions" id="colorOptions" placeholder="Enter color options" />
+
+        <label for="materials">Materials Used:</label>
+        <input v-model="editedNailArt.materials" id="materials" placeholder="Enter materials used" />
+
+        <label for="aftercare">Aftercare Tips:</label>
+        <input v-model="editedNailArt.aftercare" id="aftercare" placeholder="Enter aftercare tips" />
+
+        <label for="allergyWarnings">Allergy Warnings:</label>
+        <input v-model="editedNailArt.allergyWarnings" id="allergyWarnings" placeholder="Enter allergy warnings" />
+
+        <label for="availability">Availability:</label>
+        <input v-model="editedNailArt.availability" id="availability" placeholder="Enter availability info" />
+
+        <label for="category">Category:</label>
+        <select v-model="editedNailArt.categoryId" id="category">
+          <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+        </select>
         <button type="submit">Save</button>
         <button @click="cancelEdit">Cancel</button>
       </form>

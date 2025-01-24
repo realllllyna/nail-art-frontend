@@ -90,4 +90,9 @@ export default {
   color: #ff4382;
   cursor: pointer;
 }
+
+.nail-art-item .description::before {
+  content: '🌸';
+  margin-right: 5px;
+}
 </style>
