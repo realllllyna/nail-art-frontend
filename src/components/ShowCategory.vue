@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api, { ApiUrl } from "../services/api"; // Use pre-configured axios instance
 
 export default {
   data() {
@@ -51,7 +51,7 @@ export default {
   methods: {
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:3000/categories');
+        const response = await api.get('/categories'); // No need to include the full URL
         this.categories = response.data;
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -69,7 +69,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('http://localhost:3000/categories', {
+        const response = await api.post('/categories', {
           name: this.newCategoryName,
           description: this.newCategoryDescription,
         });
@@ -100,23 +100,19 @@ export default {
       }
 
       try {
-        // Update category on the backend
-        const response = await axios.put(`http://localhost:3000/categories/${this.currentEditingCategoryId}`, {
+        const response = await api.put(`/categories/${this.currentEditingCategoryId}`, {
           name: this.editCategoryName,
           description: this.editCategoryDescription,
         });
 
-        // Find and update the category in the local state
         const index = this.categories.findIndex(c => c.id === this.currentEditingCategoryId);
         if (index !== -1) {
           this.categories[index] = response.data;
         }
 
-        // Fetch updated category data to reflect nail art count changes
-        const categoryData = await axios.get('http://localhost:3000/categories');
-        this.categories = categoryData.data; // Refresh the full categories list with updated counts
+        const categoryData = await api.get('/categories');
+        this.categories = categoryData.data;
 
-        // Reset form fields and state
         this.isEditing = false;
         this.editCategoryName = '';
         this.editCategoryDescription = '';
@@ -137,12 +133,11 @@ export default {
     async deleteCategory(categoryId, categoryName) {
       if (confirm(`Are you sure you want to delete "${categoryName}"?`)) {
         try {
-          console.log(`Sending DELETE request for category ID: ${categoryId}`);
-          await axios.delete(`http://localhost:3000/categories/${categoryId}`);
+          await api.delete(`/categories/${categoryId}`);
           this.categories = this.categories.filter(c => c.id !== categoryId);
           alert(`Nail art category "${categoryName}" deleted successfully!`);
         } catch (error) {
-          console.error('Error deleting category:', error.response?.data || error.message);
+          console.error('Error deleting category:', error);
           alert(`Failed to delete category "${categoryName}". Please try again.`);
         }
       }
