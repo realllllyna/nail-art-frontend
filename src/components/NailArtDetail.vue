@@ -15,6 +15,7 @@
         <p><strong>Allergy Warnings:</strong> {{ nailArt.allergyWarnings }}</p>
         <p><strong>Availability:</strong> {{ nailArt.availability }}</p>
       </div>
+
       <nav>
         <div class="action-buttons">
           <router-link :to="{ name: 'BookAppointment', params: { nailArtName: nailArt.title } }" class="btn">
@@ -25,6 +26,7 @@
         </div>
       </nav>
     </section>
+
     <div v-if="isEditing" class="edit-nail-art-form">
       <h3>Edit Nail Art: {{ nailArt.title }}</h3>
       <form @submit.prevent="updateNailArt">
@@ -65,6 +67,7 @@
         <select v-model="editedNailArt.categoryId" id="category">
           <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
         </select>
+
         <button type="submit">Save</button>
         <button @click="cancelEdit">Cancel</button>
       </form>
@@ -81,6 +84,7 @@ export default {
       nailArt: null,
       isEditing: false,
       editedNailArt: {},
+      categories: [],
     };
   },
   async created() {
@@ -138,19 +142,29 @@ export default {
   padding: 20px;
 }
 
-.nail-art-info p {
-  margin: 10px 0;
-}
-
 .edit-nail-art-form {
   margin-top: 20px;
   padding: 16px;
-  background: #f9f9f9;
+  border: 1px solid #ccc;
   border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 .edit-nail-art-form label {
   font-weight: bold;
-  margin-top: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.edit-nail-art-form input,
+textarea,
+select {
+  display: block;
+  margin: 10px 0;
+  padding: 8px;
+  width: calc(100% - 16px);
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>
