@@ -29,7 +29,7 @@
 
     <div v-if="isEditing" class="edit-nail-art-form">
       <h3>Edit Nail Art: {{ nailArt.title }}</h3>
-      <form @submit.prevent="updateNailArt">
+      
         <label for="title">Nail Art Title:</label>
         <input v-model="editedNailArt.title" id="title" placeholder="Enter the title of the nail art" />
 
@@ -70,7 +70,6 @@
 
         <button type="submit">Save</button>
         <button @click="cancelEdit">Cancel</button>
-      </form>
     </div>
   </div>
 </template>
