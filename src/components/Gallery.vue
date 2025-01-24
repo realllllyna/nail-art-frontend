@@ -17,28 +17,38 @@
 import api, { ApiUrl } from "../services/api";
 
 export default {
+  props: ['nailArtAdded'], // Watch for updates
   data() {
     return {
       nailArtList: [],
     };
   },
   async created() {
-    try {
-      const response = await api.get("/entries");
-      this.nailArtList = response.data.map((entry) => ({
-        id: entry.id,
-        name: entry.title,
-        price: entry.price,
-        imageUrl: entry.imageUrl.startsWith("http")
-          ? entry.imageUrl
-          : ApiUrl + entry.imageUrl,
-        description: entry.description,
-        category: entry.category, 
-      }));
-    } catch (error) {
-      console.error("Error fetching entries:", error);
-      alert("Failed to load gallery. Please try again later.");
-    }
+    await this.fetchNailArt();
+  },
+  watch: {
+    nailArtAdded() {
+      this.fetchNailArt(); // Fetch data when updated
+    },
+  },
+  methods: {
+    async fetchNailArt() {
+      try {
+        const response = await api.get("/entries");
+        this.nailArtList = response.data.map((entry) => ({
+          id: entry.id,
+          name: entry.title,
+          price: entry.price,
+          imageUrl: entry.imageUrl.startsWith("http")
+            ? entry.imageUrl
+            : ApiUrl + entry.imageUrl,
+          description: entry.description,
+        }));
+      } catch (error) {
+        console.error("Error fetching entries:", error);
+        alert("Failed to load gallery.");
+      }
+    },
   },
 };
 </script>

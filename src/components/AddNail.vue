@@ -73,8 +73,8 @@ export default {
       categories: [],
     };
   },
-  mounted() {
-    this.fetchCategories();
+  async mounted() {
+    await this.fetchCategories();
   },
   methods: {
     // Fetch categories from the backend
@@ -139,6 +139,7 @@ export default {
           headers: { 'Content-Type': 'application/json' },
         });
         console.log('New nail art added:', response.data);
+        this.$emit('nailArtAdded'); // Emit event for parent
         this.resetForm();
         alert('New nail art has been added successfully!');
       } catch (error) {
