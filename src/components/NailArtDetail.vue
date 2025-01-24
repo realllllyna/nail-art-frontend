@@ -117,10 +117,23 @@ export default {
     },
     async updateNailArt() {
       try {
-        const response = await api.put(`/entries/${this.nailArt.id}`, this.editedNailArt);
+        // Check if imageUrl already contains ApiUrl and add it only if missing
+        const updatedNailArtData = {
+          ...this.editedNailArt,
+          imageUrl: this.editedNailArt.imageUrl.startsWith(ApiUrl)
+            ? this.editedNailArt.imageUrl
+            : ApiUrl + this.editedNailArt.imageUrl,
+        };
 
-        // Fetch the updated data
+        // Send the updated data to the API
+        const response = await api.put(`/entries/${this.nailArt.id}`, updatedNailArtData);
+
+        // Fetch the updated data to reflect changes
         const updatedNailArtResponse = await api.get(`/entries/${this.nailArt.id}`);
+        this.nailArt = {
+          ...updatedNailArtResponse.data,
+          imageUrl: ApiUrl + updatedNailArtResponse.data.imageUrl,
+        };
 
         this.isEditing = false;
         alert("Nail art updated successfully!");
