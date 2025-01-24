@@ -130,6 +130,7 @@ export default {
         ...this.nailArt,
         categoryId: parseInt(this.nailArt.categoryId, 10), // Ensure categoryId is an integer
         price: parseFloat(this.nailArt.price), // Ensure price is a float
+        imageUrl: this.nailArt.imageUrl,
         duration: parseInt(this.nailArt.duration, 10), // Ensure duration is an integer
       };
 
